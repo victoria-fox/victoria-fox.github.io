@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victoria Fox</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+
+      <!-- LOGO -->
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark">
+          <span>VF</span>
+        </div>
+        <span class="nav-name">Victoria Fox</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">About</a></li>
+        <li><a href="pages/resume.html">Resume</a></li>
+        <li><a href="pages/projects.html">Projects</a></li>
+      </ul>
+
+    </div>
+  </nav>
+
+    <!-- ABOUT ME -->
+    <section class="about-section" id="about">
+      <div class="container about-grid">
+
+        <div class="about-photos">
+          <div class="photo-item">
+            <img src="images/umpqua.jpeg"/>
+          </div>
+          <div class="photo-item">
+            <img src="images/adams.jpeg"/>
+          </div>
+          <div class="photo-item">
+            <img src="images/wine.jpeg"/>
+          </div>
+        </div>
+
+        <div class="about-body">
+          <h2>Hi! I'm Victoria.</h2>
+
+          <p>
+            I am a data scientist and CFA Charterholder specializing in the intersection of financial analysis, automation, and business development. 
+            I thrive in projects where I can take time-consuming technical processes and make them faster without sacrificing intellectual rigour or marketing polish. 
+            I am a subject matter expert in estate-planning and tax-efficient investing, and I build systems that integrate my best-in-class planning expertise into 
+            automated pipelines for fast-moving teams. 
+            I also work to create structured data around these automated processes to support long-term growth by enabling data-driven management and AI-ready knowledge graphs. 
+          </p>
+
+          <p>
+            I recently completed a Master's of Data Science at Willamette University, where I worked with researchers at the University of Oregon to build a database 
+            that inegrates over 40 years of production and pricing data from Oregon wine producers with daily climate metrics. 
+            We are working to make this dataset publicly available with the goal of bringing greater insight into the long-term impact of climate change on Oregon's wine-growing regions. 
+            I am also working on a fun side project with theme park data, where I am experimenting with recurrent neural networks to predict real-time crowd movement. 
+          </p>
+
+          <p>
+            Outside of work, you can find me looking for any excuse to be outdoors. I enjoy walking, hiking, backpacking, camping, skiing, paddleboarding, rock climing, and mountaineering. 
+            I also love good food and good drinks, whether at home with my ever-increasing cookbook collection or out at new restaurants with friends and family. 
+            I am working toward my WSET Level 3 wine certification, and I have made a game of searching for truly great wines that are also very affordable.
+          </p>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <span>© <span id="year"></span> Victoria Fox</span>
+      <div class="footer-links">
+        <a href="https://github.com/victoria-fox" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/vfox" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="pages/webrevival.html" class="easter-egg-link" title="✦">✦</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Auto-update copyright year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>

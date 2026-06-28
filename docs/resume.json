@@ -1,0 +1,164 @@
+{
+    "meta": {
+    "theme": "@jsonresume/jsonresume-theme-consultant-polished",
+    "lastModified": "2026-05-31"
+  },
+  "basics": {
+    "name": "Victoria Fox",
+    "label": "Associate Director | PPLI Strategy & Pricing | Python & ML Engineering | M.S. Data Science | Bridging Finance, Data, and AI",
+    "summary": "I build tools at the intersection of financial expertise and engineering. For the past decade, that intersection has been within the specialized world of Private Placement Life Insurance. As an Associate Director at Winged Keel Group, I work on the firm's largest and most complex PPLI cases, coordinating across fund managers, administrators, and carriers to ensure that investment review and medical underwriting timelines align so that clients meet their target subscription dates. In addition to this relationship and process management, I also build the analytical infrastructure that makes the firm run faster, smarter, and with less margin for error. I have systematically pushed our analysis pipeline from a largely manual process to an increasingly automated one — starting with Excel VBA and now building the firm's full Python-based PPLI pricing engine, integrating actuarial mechanics, tax law, and machine learning models trained on thousands of illustrations. I am a CFA Charterholder, completing an MS in Data Science (2026.08), and have contributed to published research at the intersection of quantitative analysis and policy.",
+    "url": "https://linkedin.com/in/vfox",
+    "email": "vfox@protonmail.com",
+    "location": {
+      "city": "Portland",
+      "region": "OR",
+      "countryCode": "US"
+    },
+    "profiles": [
+      {
+        "network": "linkedin",
+        "username": "vfox",
+        "url": "https://linkedin.com/in/vfox"
+      },
+      {
+        "network": "github",
+        "username": "victoria-fox",
+        "url": "https://github.com/victoria-fox"
+      }
+    ]
+  },
+  "education": [
+    {
+      "endDate": "2026-08",
+      "area": "Data Science",
+      "studyType": "Master of Science",
+      "institution": "Willamette University"
+    }
+  ],
+  "work": [
+    {
+      "name": "Winged Keel Group",
+      "location": "New York City, NY",
+      "description": "Major life insurance brokerage specializing in structuring and administration of large-block life insurance portfolios for UHNW individuals, private equity managers, and institutional clients.",
+      "position": "Associate Director",
+      "startDate": "2024-01",
+      "summary": "Led the firm's largest and most complex PPLI cases with full responsibility for cross-party timeline management — coordinating fund managers, fund administrators, and insurance carriers to align investment review, IC approval, and medical underwriting schedules so that investment dates are consistently met.",
+      "highlights": [
+        "Python Pricing Engine: Built the firm's automated PPLI pricing system from the ground up. Integrates carrier and reinsurer pricing mechanics, PPLI structure, federal and state tax law into a single automated pipeline. Connected to firm and wirehouse PowerPoint templates and deployed via the firm's AI chat interface for production use.",
+        "Machine Learning: Applied ML to decode carrier mortality pricing and IRS tax limits — values originally derived by actuarial teams — by training models on thousands of illustrations. Models dynamically adjust estimates based on case profile and deposit size.",
+        "Template Governance: Own template creation and management for the firm. Train the team on all templates from both a financial analysis and technical standpoint."
+      ]
+    },
+    {
+      "name": "Winged Keel Group",
+      "location": "New York City, NY",
+      "description": "Major life insurance brokerage specializing in structuring and administration of large-block life insurance portfolios for UHNW individuals, private equity managers, and institutional clients.",
+      "position": "Lead Associate",
+      "startDate": "2022-01",
+      "endDate": "2023-12",
+      "summary": "Subject matter expert for PPLI as an alternative asset tax-wrapper within UHNW investment portfolios. Served as dedicated analyst for the firm's largest asset manager relationships; designed and structured portfolios for a substantial book of UHNW clients with significant total committed investment.",
+      "highlights": [
+        "Automated the firm's marketing material production using Excel VBA — replacing a manual copy-paste workflow with a single template that runs full analyses, generates all footnotes, supports direct PDF export, and propagates changes firm-wide, delivering meaningful cost savings.",
+        "Monitored the IDF and SMA market and produced commercial fund updates for internal and external audiences. Partnered with the distribution team to support major fund closes."
+      ]
+    },
+    {
+      "name": "Winged Keel Group",
+      "location": "New York City, NY",
+      "description": "Major life insurance brokerage specializing in structuring and administration of large-block life insurance portfolios for UHNW individuals, private equity managers, and institutional clients.",
+      "position": "Associate",
+      "startDate": "2017-07",
+      "endDate": "2021-12",
+      "summary": "Produced financial models and actuarial risk analyses enabling client investment decisions on large-scale traditional insurance cases and institutional PPLI deposits.",
+      "highlights": [
+        "Served as primary analyst for the firm's largest Private Equity client; built portfolios for a significant number of major domestic and foreign client investments through advanced actuarial risk analysis and cross-company collaboration, including hedging mortality risk on a large PE investment portfolio.",
+        "Delivered material reductions in annual premium payments through portfolio restructuring for UHNW families while realigning the product mix to wealth transfer objectives. Increased total coverage, reduced annual premiums, eliminated material tax risk, and improved portfolio IRR at life expectancy by as much as 50 basis points."
+      ]
+    },
+    {
+      "name": "Winged Keel Group",
+      "location": "New York City, NY",
+      "description": "Major life insurance brokerage specializing in structuring and administration of large-block life insurance portfolios for UHNW individuals, private equity managers, and institutional clients.",
+      "position": "Assistant",
+      "startDate": "2016-01",
+      "endDate": "2017-06",
+      "summary": "Supported analyst team in client material preparation while proactively taking on analytical tasks and training responsibilities.",
+      "highlights": [
+        "Developed an intern training program that eliminated the need for a second full-time assistant, achieving meaningful labor cost savings.",
+        "Automated the firm's industry-wide IDF report in Excel, reducing production costs and supporting growth of PP policy administration."
+      ]
+    },
+    {
+      "name": "The WomanStats Project",
+      "position": "Research Assistant",
+      "startDate": "2011-01",
+      "endDate": "2015-09",
+      "summary": "Working part-time while studying, led research on the prevalence of patrilocality across more than 175 countries, involving meta-analysis and country rankings. Delivered a full redesign of the project's website and marketing material and represented the project at international conferences, including the UN Commission on the Status of Women.",
+      "highlights": [
+        "Country rankings chart appeared in published research (Sex and World Peace, Valerie Hudson, Columbia University Press).",
+        "Self-taught HTML, JavaScript, and Adobe Illustrator to deliver the website redesign; translated all source material from French and Hungarian."
+      ]
+    },
+    {
+      "name": "Faculté de Gestion, Economie & Sciences — Université Catholique de Lille",
+      "location": "Lille, France",
+      "position": "Intern",
+      "startDate": "2015-04",
+      "endDate": "2015-08",
+      "summary": "Employed in the Department of Economics, Management and Sciences; supported file applications from freshmen students, administered English exams, and translated material from French to English."
+    }
+  ],
+  "projects": [
+    {
+      "name": "Oregon Wine & Climate Database",
+      "description": "Co-developing a first-of-its-kind unified dataset connecting Oregon wine production, pricing, and climate data from 1981 to 2024 — filling a gap left when the USDA discontinued state-level wine data collection for all states outside California and Washington in 2011.",
+      "highlights": [
+        "Data pipeline ingesting scanned historical PDFs (AWS Textract), modern PDFs (pdfplumber), USDA NASS API, and PRISM climate data clipped to AVA boundaries via TTB shapefiles and rasterstats.",
+        "PostgreSQL database hosted on Railway with a REST API built in FastAPI, designed for future public release.",
+        "Time-series panel regression at the AVA × varietal level to estimate fixed effects of climate aggregates (GDD, extreme heat days, frost days) on production and pricing.",
+        "XGBoost models to predict production by phenological stage and varietal, with a second-stage model estimating how production variability flows through to pricing under projected climate scenarios.",
+        "Interactive dashboard comparing production, pricing, and climate trends across Oregon, California, and Washington AVAs by varietal."
+      ],
+      "keywords": ["Python", "R", "PostgreSQL", "FastAPI", "AWS Textract", "XGBoost", "Machine Learning", "PRISM API", "USDA NASS API", "rasterstats", "geopandas", "geospatial analysis"],
+      "startDate": "2026-01",
+      "type": "Data Science / ML",
+      "roles": []
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Chartered Financial Analyst (CFA) Charterholder",
+      "issuer": "CFA Institute"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Programming & Automation",
+      "keywords": ["Python", "R", "Excel VBA", "Automated Pipeline Development", "API Integration"]
+    },
+    {
+      "name": "Financial Analysis",
+      "keywords": ["Financial Modeling", "PPLI Structuring & Tax Law", "Estate Planning", "Insurance-Dedicated Funds (IDFs)", "Portfolio Structuring", "Alternative Asset Management"]
+    },
+    {
+      "name": "Data & Analytics",
+      "keywords": ["Machine Learning", "Predictive Modeling", "Data Science", "Financial Data Automation", "Statistical Analysis"]
+    },
+    {
+      "name": "Technology & Tools",
+      "keywords": ["Python", "R", "Excel VBA", "SQL", "PyTorch"]
+    },
+    {
+      "name": "Leadership & Strategy",
+      "keywords": ["Template Development & Governance", "Process Automation", "Cross-Functional Collaboration", "Relationship Management", "Staff Training & Development", "Stakeholder Management"]
+    }
+  ],
+  "publications": [
+    {
+      "name": "Sex and World Peace",
+      "publisher": "Columbia University Press",
+      "releaseDate": "2012-01",
+      "summary": "Supporting research contributor. Contributed quantitative data and analysis on patrilocality and cousin marriage prevalence across more than 175 countries."
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <div class="nav-logo-mark"><span>VF</span></div>
+        <span class="nav-name">Victoria Fox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">About</a></li>
+        <li><a href="resume.html">Resume</a></li>
+        <li><a href="projects.html" class="active">Projects</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+
+      <header class="page-header">
+        <h1>Projects</h1>
+      </header>
+
+      <div class="projects-list">
+
+        <article class="project-card">
+          <div>
+            <h2 class="project-title">Seeking high-return areas for development aid? Invest in women's security.</h2>
+            <p class="project-desc">
+              An open letter to the OECD, in which we argue that women's security should be included in their core economic
+              health assessments, not as a supplementary observation but as variables that appear alongside GDP, NNI, and 
+              human development indices in their flagship reports and country assessments.
+            </p>
+            <div class="project-tags">
+              <span class="tag">data visualization</span>
+              <span class="tag">plotly</span>
+              <span class="tag">shiny apps</span>
+              <span class="tag">r</span>
+              <span class="tag">ggplot2</span>              
+            </div>
+          </div>
+          <a href="https://victoria-fox.github.io/womanstats_oecd/" 
+             class="project-link" target="_blank" rel="noopener">View →</a>
+        </article>
+
+        <article class="project-card">
+          <div>
+            <h2 class="project-title">CRMs have always been optimistic. But is their optimism statistically significant?</h2>
+            <p class="project-desc">
+              Analysis of an insurance brokerage sales pipeline to determine (1) whether the firm systematically
+              underestimates pricing prior to medical underwriting and (2) which factors are most influential in 
+              determining the size of difference between final cost and the originally quoted pricing.
+            </p>
+            <div class="project-tags">
+              <span class="tag">r</span>
+              <span class="tag">ggplot2</span>
+              <span class="tag">statistics</span>
+            </div>
+          </div>
+          <a href="../docs/underwriting_analysis.pdf" 
+             class="project-link" target="_blank" rel="noopener">View →</a>
+        </article>
+
+        <article class="project-card">
+          <div>
+            <h2 class="project-title">If your airport is in chaos, you might want to be on a Delta flight.</h2>
+            <p class="project-desc">
+              We analyzed 10 years of flight delay data, utilizing a custom recovery ratio metric combined with
+              a decision tree regressor to determine which carrier is the most effective at making up
+              time in the air when there are takeoff delays.
+            </p>
+            <div class="project-tags">
+              <span class="tag">python</span>
+              <span class="tag">matplotlib</span>
+              <span class="tag">seaborn</span>
+              <span class="tag">sklearn</span>   
+              <span class="tag">decision tree regressor</span>                         
+            </div>
+          </div>
+          <a href="../docs/flight_analysis.html" 
+             class="project-link" target="_blank" rel="noopener">View →</a>
+        </article>
+
+        <article class="project-card">
+          <div>
+            <h2 class="project-title">In the age of AI, every organization needs a data governance plan. Here's how to create one.</h2>
+            <p class="project-desc">
+              An accessable guide to creating a data governance plan, intended as a starting place for 
+              organizations of any size to begin utilizing their data to its fullest potential.
+            </p>
+            <div class="project-tags">
+              <span class="tag">data governance</span>
+              <span class="tag">data management</span>
+              <span class="tag">change management</span>
+            </div>
+          </div>
+          <a href="../docs/data_governance_plan.pdf" 
+             class="project-link" target="_blank" rel="noopener">View →</a>
+        </article>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© <span id="year"></span> Victoria Fox</span>
+      <div class="footer-links">
+        <a href="https://github.com/victoria-fox" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/vfox" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="webrevival.html" class="easter-egg-link" title="✦">✦</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
