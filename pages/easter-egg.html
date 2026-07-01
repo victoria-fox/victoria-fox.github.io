@@ -28,59 +28,38 @@
     }
 
     .tile {
-      background: #fff;
+      background: #000;
       display: flex;
+      flex-direction: column;
       width: 100%;
       max-width: 860px;
       z-index: 1;
-    }
-
-    .image-slot {
-      width: 340px;
-      flex-shrink: 0;
-      background: #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 6px;
-      color: #999;
-      font-family: monospace;
-      font-size: 11px;
-    }
-
-    .image-slot svg { opacity: 0.4; }
-    
-    .image-slot img {
-      width: 340px;
-      object-fit: cover;
-    }
-
-    .text {
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
+      padding: 0;
       gap: 1rem;
     }
 
-    h1 { font-size: 1.5rem; font-weight: normal; margin: 0; }
-    p { font-size: 1rem; line-height: 1.7; color: #333; margin: 0; }
-    a { font-size: 0.875rem; color: #555; margin-top: auto; }
+    h1 { font-size: 1.5rem; font-weight: normal; color: #fff; margin: 0; }
+    p { font-size: 1rem; line-height: 1.7; color: #fff; margin: 0; }
+    a { font-size: 0.875rem; color: #fff; }
 
-    @media (max-width: 640px) {
-      .tile {
-        flex-direction: column;
-      }
-      .image-slot {
-        width: 100%;
-        height: 240px;
-      }
-      .image-slot img {
-        width: 100% !important;
-        height: 100%;
-        object-fit: cover;
-      }
+    .game-frame-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #000;
     }
+
+    .game-frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .credit {
+      font-size: 0.8125rem;
+      color: #777;
+    }
+    .credit a { color: #777; }
   </style>
 </head>
 <body>
@@ -88,18 +67,24 @@
   <canvas id="stars"></canvas>
 
   <div class="tile">
-    <div class="image-slot">
-    <img src="../images/cocktail.jpeg" alt="Last of the Oaxacans" style="object-fit:cover;">
+    <h1>You found my easter egg!</h1>
+    <p>
+      As a reward, please enjoy a few rounds of Space Cadet Pinball! It's a 90s classic. 
+    </p>
+    <a href="../index.html">← back to portfolio</a>
+    <div class="game-frame-wrap">
+      <iframe
+        src="https://pinball.alula.me/"
+        title="3D Pinball for Windows - Space Cadet"
+        allow="autoplay"
+        loading="lazy"
+      ></iframe>
     </div>
-    <div class="text">
-      <h1>You found my easter egg!</h1>
-      <p>
-        As a reward, allow me to recommend my current favorite cocktail. It's a variation on The Last Word, which is made of equal parts 
-        gin, lime juice, maraschino liqueur, and green chartreuse. Currently, I am loving a variation called The Last of the Oaxacans, 
-        which swaps the gin with mezcal for a softer, smokier finish.
-      </p>
-      <a href="../index.html">← back to portfolio</a>
-    </div>
+    <p class="credit">
+      Game by <a href="https://github.com/k4zmu2a/SpaceCadetPinball" target="_blank" rel="noopener">k4zmu2a</a>,
+      WebAssembly port by <a href="https://github.com/alula/SpaceCadetPinball" target="_blank" rel="noopener">alula</a>,
+      hosted at <a href="https://pinball.alula.me/" target="_blank" rel="noopener">pinball.alula.me</a>.
+    </p>
   </div>
 
   <script>
