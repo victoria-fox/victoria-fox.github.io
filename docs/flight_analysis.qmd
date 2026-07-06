@@ -1,0 +1,430 @@
+---
+title: "Analysis of Airline Recovery in Response to Airport-Driven Flight Delays"
+date: last-modified
+author: "Victoria Fox & Hailee Vandiver"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 3
+    html-math-method: mathjax
+jupyter: python3
+execute:
+  echo: false
+  warning: false
+  message: false
+fig-width: 7
+fig-height: 4
+bibliography: references.bib
+csl: apa.csl
+---
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.ticker as ticker
+
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
+from sklearn import tree
+
+sns.set_theme(
+    style = 'white',
+    context = 'notebook',
+    palette = 'colorblind'
+)
+```
+
+```{python}
+flights = pd.read_csv("airline_delay_2013_to_2023_cleaned.csv")
+```
+
+# Introduction
+
+This dataset contains flight delay information across various carriers and airports in the United States from August 2013 through August 2023 [@airline_dataset]  
+
+Each row in the dataset corresponds to a *single monthly summary* for a specific combination of carrier, airport, year, and month. We recognize this as a significant limitation in our analysis, as it prevents us from analyzing specific flights, and the monthly averages may mask important differences between flights on the same route within the same month. 
+
+The dataset includes numerous metrics related describing both arrival and departure-related delay causes, as well as airport and carrier metadata. Our analysis utilized the following variables of interest:
+
+- carrier: Carrier code
+- carrier_name: Carrier name
+- airport: Airport code
+- airport_name: Airport name
+- city: City of airport
+- state: State of airport
+- carrier_delay: Delay attributed to the carrier
+- weather_delay: Delay attributed to weather
+- nas_delay: Delay attributed to the National Airspace System (NAS) 
+- security_delay: Delay attributed to security
+- late_aircraft_delay: Delay attributed to a late inbound aircraft
+- arr_delay: Total arrival delay
+
+We have made a distinction between delays that happen prior to the plane's arrival at the airport, captured in late_aircraft_delay, vs. delays that happen at the airport, which we calcualte as 'takeoff_delay':
+
+takeoff_delay = carrrier_delay + weather_delay + nas_delay + security_delay
+
+We recognize geography as a confounding variable that introduces additional noise into delay-related metrics, making it more difficult to compare carrier performance fairly across the entire country. To create a more consistent regional context, we narrowed the dataset to include only airports located in the *Northwest*, specifically:
+
+- Oregon (OR)
+- Washington (WA)
+- Northern California — represented by San Francisco International Airport (SFO) 
+- Idaho (ID) 
+- Montana (MT)
+- Wyoming (WY)
+- Colorado (CO)
+- Utah (UT)
+
+SFO is included because it is a major West Coast hub with strong operational ties to the Northwest. This regional focus allows us to compare carrier performance under more comparable environmental and operational conditions.
+
+We limited our analysis to the 7 carriers with the most flights in the region. The difference between the number of flights for the 6th to 7th carrier was 23%, while the difference between the 7th to the 8th carrier was 48%. We felt this was a natural cutoff point, and we limited the airports to only those airports that had flights from all 7 top carriers.
+
+Our exploratory analysis focused on the variables describing the delay duration (in minutes) and revealed consistent differences between carriers in terms of both delay frequency and length. 
+
+*Fig. 1: Average Takeoff Delay by Carrier*
+```{python takeoff_delay_by_carrier}
+# Group carriers by number of flights
+top_carriers = flights.groupby('carrier_name')['arr_flights'].sum().sort_values(ascending=False)
+
+# Group carriers by average takeoff delay then sort by top carriers
+delay_by_carrier = flights.groupby('carrier_name')['takeoff_delay'].mean().to_frame('avg_takeoff_delay')
+delay_by_carrier = delay_by_carrier.loc[top_carriers.index]
+
+# Filter for top 10 only
+top_carriers = delay_by_carrier.head(7)
+
+# Plot
+g = sns.barplot(
+    data = top_carriers,
+    x = 'avg_takeoff_delay',
+    y = 'carrier_name',
+    color = 'orangered'
+)
+g.set_xlabel('Average Takeoff Delay (minutes)')
+g.set_ylabel('Carrier')
+plt.show()
+```
+
+We also saw a noticible impact of the COVID pandemic on flights in 2020 vs. flights in other years. There were less flights in 2020 overall, and they reflected a pattern in takeoff delay across carriers that differed from other years.
+
+*Fig. 2: Average Takeoff Delay by Year*
+```{python takeoff_delay_by_year}
+fig, axes = plt.subplots(1, 2)
+
+# Create subplot for 2020
+df_2020 = flights[flights['year'] == 2020].copy()
+df_2020 = df_2020.groupby('carrier_name')['takeoff_delay'].mean().to_frame('avg_takeoff_delay')
+df_2020_by_carrier = df_2020.loc[top_carriers.index]
+sns.barplot(
+    df_2020_by_carrier, 
+    x = 'avg_takeoff_delay', 
+    y = 'carrier_name', 
+    color = 'orangered',
+    ax=axes[0])
+axes[0].set_title('2020')
+axes[0].set_ylabel('Carrier')
+
+# Create subplot for all other years
+df_not_2020 = flights[flights['year'] != 2020].copy()
+df_not_2020 = df_not_2020.groupby('carrier_name')['takeoff_delay'].mean().to_frame('avg_takeoff_delay')
+df_not_2020_by_carrier = df_not_2020.loc[top_carriers.index]
+sns.barplot(
+    df_not_2020_by_carrier, 
+    x = 'avg_takeoff_delay', 
+    y = 'carrier_name', 
+    color = 'orangered',
+    ax = axes[1])
+axes[1].set_title('All Other Years')
+axes[1].set_ylabel('')
+axes[1].set_yticklabels([])
+
+for ax in axes.flat:
+    ax.set_xlabel('Average Takeoff Delay')
+plt.tight_layout()
+plt.show()
+
+flights = flights[flights['year'] != 2020].copy()
+```
+
+Thus, we decided to exclude 2020 from our analysis.
+
+Our exploratory analysis led us to a deeper, performance-oriented question: **do some airlines handle disruptions more efficiently than others?**
+
+A flight that departs late doesn’t always arrive equally late; airlines sometimes make up time during flight operations. Contrary to popular belief, the time is rarely made up by speeding up, which would drive a costly increase in fuel consumption. Instead, the pilot may literally 'cut corners' by bypassing scheduled waypoints to fly in a more direct path [@pilots1] or they may adjust altitude to take advantage of calmer air and lower headwinds [@pilots2].
+
+Measuring how much of a departure delay is recovered by arrival helps evaluate operational efficiency and service reliability. To quantify this, we developed a **recovery ratio** metric:
+
+$$
+\text{Recovery Ratio} = 1 - \frac{\text{Arrival Delay}}{\text{Takeoff Delay}}
+$$
+
+- A ratio close to 1.0 is an indication that the carrier recovers most of the delay prior to arrival.
+- A ratio around 0.0 indicates the carrier typically arrives as late as it departed.
+- A negative ratio indicates the carrier's flights tend to fall further behind schedule.
+
+This question moves the analysis beyond describing delay frequency, focusing instead on **airline performance under disruption**. We view this as a key indicator of the carrier's operational resilience.
+
+# Key Metrics
+
+## Average Takeoff Delay
+
+*Fig. 3: Average Takeoff Delay per Carrier by Airport*
+```{python takeoff_delay_by_carrier_airport}
+# Group by airport + carrier 
+avg_takeoff_delay = (
+    flights
+    .groupby(['airport', 'carrier', 'carrier_name_short'], as_index=False)['takeoff_delay']
+    .mean()
+    .sort_values(['airport', 'takeoff_delay'], ascending=[True, False])
+)
+
+# Pivot for heatmap
+pivot_delay = avg_takeoff_delay.pivot(
+    columns='carrier_name_short', index='airport', values='takeoff_delay'
+)
+
+# Create heatmap
+plt.figure(figsize=(7, 6))
+sns.heatmap(
+    data=pivot_delay,
+    cmap='YlOrRd',  
+    annot=True,
+    fmt='.2f',
+    center=0,       
+    linewidths=0.5,
+    cbar_kws={'label': 'Average Takeoff Delay (minutes)'}
+)
+plt.xlabel("Carrier")
+plt.ylabel("Airport")
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+```
+
+Fig. 3 examines average takeoff delay at each airport to better understand which carriers experience the greatest pre-departure delays and whether these patterns vary by airport. American seems somewhat better than average, while SkyWest and United seem somewhat worse. The patterns by airport are clear, with DEN and SFO as particularly poor performers in terms of takeoff delay.
+
+## Average Arrival Delay
+
+While takeoff delay captures how late flights are at departure, arrival delay reflects *how late flights ultimately arrive*, combining both pre-departure delays and in-flight recovery.
+
+To explore these patterns, we compute: (1) the overall average arrival delay for each of the top carriers and (2) the average arrival delay at each individual airport. These metrics reveal which airlines consistently arrive later than expected and whether these trends vary across airports in the region.  
+
+*Fig. 4: Average Arrival Delay per Carrier by Airport*
+```{python arrival_delay_by_carrier_airport}
+# Average arrival delay per carrier overall 
+avg_arr_delay = (
+    flights
+    .groupby(['carrier', 'carrier_name_short'], as_index=False)['arr_delay']
+    .mean()
+    .rename(columns={'arr_delay': 'avg_arrival_delay'})
+    .sort_values('avg_arrival_delay', ascending=False)
+)
+
+# Average arrival delay per carrier by airport
+avg_arr_delay_by_airport = (
+    flights
+    .groupby(['airport', 'carrier', 'carrier_name_short'], as_index=False)['arr_delay']
+    .mean()
+    .rename(columns={'arr_delay': 'avg_arrival_delay'})
+    .sort_values(['airport', 'avg_arrival_delay'], ascending=[True, False])
+)
+
+# Pivot for heatmap
+pivot_arr_delay = avg_arr_delay_by_airport.pivot(
+    index='airport',
+    columns='carrier_name_short',
+    values='avg_arrival_delay'
+)
+
+# Create heatmap
+plt.figure(figsize=(7, 6))
+sns.heatmap(
+    pivot_arr_delay,
+    cmap='YlOrRd',  
+    annot=True,
+    fmt='.2f',
+    center=0,       
+    linewidths=0.5,
+    cbar_kws={'label': 'Average Arrival Delay (minutes)'}
+)
+plt.xlabel("Carrier")
+plt.ylabel("Airport")
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+```
+
+The arrival delays seem to follow the same overall pattern as takeoff delays, with DEN, SFO, and SkyWest having noticibly higher arrival delays than the other airports and airlines in the dataset. It also seems that the average arrival delays are larger overall than average takeoff delays, suggesting that carriers are not making up time in the air.
+
+## Recovery Ratio
+
+To explore this pattern further, we will use the recovery ratio to evaluate how well carriers recover from delays once they occur. As a reminder, the recovery ratio is a ratio of takeoff delay and arrival delay, with the following interpretation:
+
+- Recovery ratio > 0: The flight made up time (arrived closer to on-time than its takeoff delay would suggest)  
+- Recovery ratio = 0: Little or no recovery (arrived about as late as it departed)  
+- Recovery ratio < 0: The flight fell further behind (arrived even later than takeoff delay would suggest)
+
+We average this recovery ratio for each airport–carrier combination to compare how well different airlines recover from delays at each PNW airport.
+
+*Fig. 5: Average Recovery Ratio per Carrier by Airport*
+```{python recovery_ratio_by_carrier_airport}
+# Calculate average delays
+avg_delays = (
+    flights
+    .groupby(['airport', 'carrier', 'carrier_name_short'], as_index=False)
+    .agg(
+        avg_takeoff_delay = ('takeoff_delay', 'mean'),
+        avg_arr_delay = ('arr_delay', 'mean')
+    )
+)
+
+# Calculate average recovery ratio 
+avg_delays['recovery_ratio'] = 1 - (
+    avg_delays['avg_arr_delay'] / avg_delays['avg_takeoff_delay']
+)
+
+# Compute average recovery performance per airport × carrier
+avg_recovery = (
+    avg_delays
+    .groupby(['airport', 'carrier', 'carrier_name_short'], as_index=False)['recovery_ratio']
+    .mean()
+    .rename(columns={'recovery_ratio': 'avg_recovery_ratio'})
+    .sort_values(['airport', 'avg_recovery_ratio'], ascending=[True, False])
+)
+
+# Pivot for heatmap
+pivot_recovery = avg_recovery.pivot(
+    index='airport', 
+    columns='carrier_name_short', 
+    values='avg_recovery_ratio'
+)
+
+# Create heatmap
+plt.figure(figsize=(83, 6))
+sns.heatmap(
+    pivot_recovery,
+    cmap='RdYlGn',  # green = good recovery, red = bad
+    annot=True,
+    fmt='.2f',
+    center=0,       # zero = break-even/no recovery
+    linewidths=0.5,
+    cbar_kws={'label': 'Average Recovery Ratio'},
+    vmin = -1,
+    vmax = 1
+)
+plt.xlabel("Carrier")
+plt.ylabel("Airport")
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+```
+
+Fig. 5 reveals that none of the carriers made up time while in the air (all the recovery ratios are negative). However, some of the carriers were more resistant to further delays than others. Most notably, Delta seems to lose the least amount of additional time in air while Southwest, United, and Frontier seem to lose the greatest amount of additional time.
+
+# Flight Delay Model
+
+This section seeks to create a model that will predict the total expected arrival delay based on the carrier and departure airport.
+
+*Fig. 6: Decision Tree for Predicting Recovery Ratio*
+```{python decision_tree}
+df = avg_delays.copy()
+
+# Create df with dummy variable for identifier
+carrier_dummies = pd.get_dummies(df['carrier_name_short'])
+airport_dummies = pd.get_dummies(df['airport'])
+
+# Create model variables
+X = pd.concat([
+    carrier_dummies,
+    airport_dummies],
+    axis = 1)
+y = df['recovery_ratio']
+
+# Split into training & test data
+X_train_raw, X_test_raw, y_train, y_test = train_test_split(
+    X, y, test_size = 0.2, random_state = 10
+)
+
+# Standardize X variables
+scale = StandardScaler()
+X_train = scale.fit_transform(X_train_raw)
+X_train = pd.DataFrame(X_train, columns = X.columns, index = X_train_raw.index)
+X_test = scale.transform(X_test_raw)
+X_test = pd.DataFrame(X_test, columns = X.columns, index = X_test_raw.index)
+
+# Create decision tree
+model = DecisionTreeRegressor(
+    max_depth = 4,
+    min_samples_split = 5,
+    random_state = 10
+)
+model.fit(X_train, y_train)
+
+# Predict arrival delay
+y_train_exp = model.predict(X_train)
+y_test_exp = model.predict(X_test)
+
+# Plot the tree
+plt.figure(figsize = (8, 6))
+tree.plot_tree(
+    model,
+    feature_names = X.columns,
+    filled = True,
+    rounded = True
+)
+plt.tight_layout()
+plt.show()
+```
+
+```{python validation_vars}
+# Validation variables
+r2 = r2_score(y_train, y_train_exp)
+rmse = np.sqrt(mean_squared_error(y_train, y_train_exp))
+rmse_range = y_test.max() - y_test.min()
+rmse_perc = (rmse / rmse_range) * 100
+
+baseline_exp = np.full(len(y_test), y_train.mean())
+baseline_r2 = r2_score(y_test, baseline_exp)
+baseline_rmse = np.sqrt(mean_squared_error(y_test,baseline_exp))
+baseline_rmse_perc = (baseline_rmse / rmse_range) * 100
+
+delta_rmse = baseline_rmse - rmse
+delta_rmse_perc = (rmse / baseline_rmse - 1) * 100
+```
+
+The decision tree indicates that carrier is the main determining factor in the recovery ratio, accounting for the initial split (Delta) and a secondary split (Southwest). The model pedicted an average recovery ratio of -0.685 for Delta flights, indicating that Delta falls a further 68.5% behind schedule when there are takeoff delays. In contrast, the model predicted an average recovery ratio of -0.732 for Southwest, indicating that Southwest falls a further 73.2% behind schedule when there are takeoff delays. Airport appeard in subsequent nodes, suggesting that airport infrastructure was less influential than the most extreme carrier operational delays, but less impactful than the more average carrier operational delays. Fig. 7 summarizes the most important features in our model.
+
+*Fig. 7: Feature Importance (Top 5)*
+```{python feature_importance}
+# Get top features
+df = pd.DataFrame({
+    'Feature': X.columns,
+    'Importance': model.feature_importances_
+}).sort_values('Importance', ascending = False)
+
+top_features = df.head(5)
+
+# Plot
+g = sns.barplot(
+    data = top_features,
+    y = 'Feature',
+    x = 'Importance',
+    color = 'orangered'
+)
+plt.show()
+```
+
+The model has an R-squared of `{python} f"{r2:.3f}:"`, indicating that takeoff delay, carrier, and airport explain 60.8% of the variance in the recovery ratio. The model produced an RMSE of `{python} f"{rmse:.3f}"` which accounts for `{python} f"{rmse_perc:.3f}%"` of the range of values for the recovery ratio. If we simply took the mean of the overall recovery ratio and compared it to our test data (a 'baseline' model), we calculate an RMSE of `{python} f"{baseline_rmse:.3f}"`. This indicates that our model reduced prediction errors by `{python} f"{-delta_rmse_perc:.1f}%"`.
+
+# Conclusion
+
+Our research indicates that Delta is the most effective airline in terms of making up time in air when there are takeoff delays. Though our research did not indicate any causal relationships among the variables, we postulate that our results could be the result of better operational efficiency at Delta and potentially more skill or latitude for independent and agile decision-making amongst Delta's pilots. 
+
+Our research was limited in scope. We focused on only a few states within the U.S. and we limited our research to airports that had flights from all of our top carriers. It is likely that regional airports may display different patterns than larger airports, but these were excluded from our dataset becuase they did not have flights from all of the top carriers.
+
+We would focus subsequent research on expanding the scope to see if these same trends hold true when considering the entire country, including smaller regional airports in addition to larger international airports. 
